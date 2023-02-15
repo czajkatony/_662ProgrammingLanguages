@@ -20,9 +20,9 @@ data KULang where
 evalErr :: KULang -> Int
 -- Error if number is negative
 evalErr (Num x) = if x<0 then error "negative num not allowed" else x
-evalErr (Plus l r) = (evalErr l) + (evalErr l)
+evalErr (Plus l r) = (evalErr l) + (evalErr r)
 -- Error if two positive numbers and r is > l
-evalErr (Minus l r) = let x = (evalErr l) - (evalErr r) in if x<0 then error "Subtraction err" else x
+evalErr (Minus l r) = let x = ((evalErr l) - (evalErr r)) in if x<0 then error "Subtraction err" else x
 evalErr (Mult l r) = (evalErr l) * (evalErr r)
 -- Error if d == 0
 evalErr (Div n d) = let x = (evalErr d) in if x == 0 then error "Divide by zero error" else (evalErr n) `div` (evalErr d)
@@ -128,16 +128,9 @@ term = parens lexer expr
 
 parseKULang = parseString expr
 
--- Main function and testing
--- testCases = ["1+2","2/1","4*4","10-5","2^2"]
--- map evalErr testCases
--- map evalMaybe testCases
--- map evalMonad testCases
-
---TO DO: Create fully robust test cases, make them work for all.
 main :: IO()
 main = do
-    let testCases =  ["1+2","2/1","4*4","10-5","2^2", "5/0", "9-10","2^0"]
+    let testCases =  ["1+2","2/1","4*4","10-5","2^2", "5/0", "9-10","2^0", "5+5-4"]
     let results = map interpret testCases
     print results
 
